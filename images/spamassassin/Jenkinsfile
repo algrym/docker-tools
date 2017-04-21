@@ -16,7 +16,7 @@ pipeline {
   stages {
     stage('Static Code Analysis') {
       steps {
-        sh "env ; cd services/${params.Service} && make analysis"
+        sh "env ; cd images/${params.Service} && make analysis"
         sh "git rev-parse HEAD > git_commit.log"
       }
     }
@@ -24,7 +24,7 @@ pipeline {
       steps {
         script {
           git_commit=readFile('git_commit.log').take(7)
-          dir("services/${params.Service}") {
+          dir("images/${params.Service}") {
 	      // TODO pass build_arg label(s)
             img = docker.build("${registry}/${env.JOB_NAME\
               }:${params.BaseEnv}_build_${env.BUILD_NUMBER}_${git_commit}")
@@ -47,7 +47,7 @@ pipeline {
     stage('Functional Tests') {
       steps {
         script {
-          dir("services/${params.Service}") {
+          dir("images/${params.Service}") {
             sh "make test_functional"
             img.push "latest"
           }
