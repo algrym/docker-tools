@@ -1,6 +1,6 @@
 #!groovy
-# Pipeline for docker-image build
-#  created by richb@instantlinux.net 20-apr-2017
+// Pipeline for docker-image build
+//  created by richb@instantlinux.net 20-apr-2017
 
 def registry = 'dockerhub.instantlinux.net:5000'
 def notify = 'richb@instantlinux.net'
