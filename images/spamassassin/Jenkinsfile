@@ -1,10 +1,13 @@
-!groovy
+#!groovy
+# Pipeline for docker-image build
+#  created by richb@instantlinux.net 20-apr-2017
+
 def registry = 'dockerhub.instantlinux.net:5000'
 def notify = 'richb@instantlinux.net'
 
 pipeline {
   parameters {
-    string(name: 'Service', defaultValue: 'jenkins-master',
+    string(name: 'Service', defaultValue: 'spamd',
            description: 'Service image to test/deploy')
     string(name: 'BaseEnv', defaultValue: 'dev',
            description: 'Environment to test/deploy')
@@ -31,6 +34,8 @@ pipeline {
     }
     stage('Push Image') {
       steps {
+        // TODO: this demonstrates Docker's secrets mechanism, but
+        //  we might prefer a Jenkins credential here
         sh "if [ ! -d /opt/jenkins/.docker ]; then \
           mkdir /opt/jenkins/.docker ;\
           cp /var/run/secrets/repo-push /opt/jenkins/.docker/config.json; fi"
@@ -74,3 +79,4 @@ pipeline {
     }
   }
 }
+
