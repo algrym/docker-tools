@@ -6,7 +6,7 @@ if [ $SYNC_ROLE == "primary" ]; then
 
   cp /var/run/secrets/$SECRET /var/run/$SECRET.rsa
   chmod 400 /var/run/$SECRET.rsa
-  ln -s /var/run/$SECRET.rsa /root/.ssh/
+  ln -s /var/run/$SECRET.rsa /root/.ssh/swarm-sync.rsa
 
   if [ ! -e /root/.unison/common.prf ]; then
     # configuration files files are *.prf; don't overwrite after initial
