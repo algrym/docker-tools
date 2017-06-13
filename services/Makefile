@@ -11,4 +11,4 @@ denali: etcd
 $(SERVICES)::
 	@echo Starting $@
 	@if [ $@ != "etcd" ]; then docker pull $(REGISTRY)/$@:latest; fi
-	cd $@ ; INSTANCE=$(INSTANCE) ADV=$(ADV) docker-compose up -d
+	cd $@ ; docker-compose up -d
