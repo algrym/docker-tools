@@ -1,0 +1,62 @@
+version: '3'
+
+services:
+  authelia:
+    image: clems4ever/authelia
+    volumes:
+    - ${ADMIN_PATH:-/opt}/authelia/config.yml:/etc/authelia/config.yml:ro
+    # lib:/var/lib/authelia
+    # data:/var/lib/authelia/store
+    ports:
+    - ${PORT_AUTHELIA:-17380}:80
+    deploy:
+      placement:
+        constraints:
+        - node.hostname == mckinley
+
+  ldap:
+    image: dinkel/openldap:latest
+    environment:
+      SLAPD_ORGANISATION: Community Internet
+      SLAPD_DOMAIN: ci.net
+      SLAPD_PASSWORD: password
+      SLAPD_ADDITIONAL_MODULES: memberof
+      SLAPD_ADDITIONAL_SCHEMAS: openldap
+      SLAPD_FORCE_RECONFIGURE: 'true'
+    volumes:
+    - ${ADMIN_PATH:-/opt}/authelia/ldap:/etc/ldap.dist/prepopulate
+    # ldap:/var/lib/ldap
+    ports:
+    - 389:389
+    deploy:
+      placement:
+        constraints:
+        - node.hostname == mckinley
+  nginx:
+    image: nginx:alpine
+    volumes:
+    - /home/richb/tinkering/authelia/example/nginx/nginx.conf:/etc/nginx/nginx.conf
+    - /home/richb/tinkering/authelia/example/nginx/index.html:/usr/share/nginx/html/index.html
+    - /home/richb/tinkering/authelia/example/nginx/secret.html:/usr/share/nginx/html/secret.html
+    - /home/richb/tinkering/authelia/example/nginx/ssl:/etc/ssl
+    ports:
+    - 8080:443
+    deploy:
+      placement:
+        constraints:
+        - node.hostname == mckinley
+    networks:
+      default:
+        aliases:
+          - home.test.local
+          - secret.test.local
+          - secret1.test.local
+          - secret2.test.local
+          - mx1.mail.test.local
+          - mx2.mail.test.local
+          - auth.test.local
+
+#volumes:
+#  ldap:
+#  lib:
+#  data:
